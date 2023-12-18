@@ -68,10 +68,12 @@ public class FirebaseService {
 
                             FirebaseUserDetails userDetails = new FirebaseUserDetails(userId, email, role);
 
-                            Authentication authentication = new UsernamePasswordAuthenticationToken(
+                            UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
                                     userDetails, null, null);
+                            
+                            Authentication authentication = token;
 
-                            System.out.println("Authentication token: " + authentication);
+                            System.out.println("Authentication token: " + token);
                             SecurityContextHolder.getContext().setAuthentication(authentication);                        
                         } else {
                             System.out.println("No data found in above uid");
