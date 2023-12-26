@@ -18,7 +18,7 @@ public class CitateMachineController {
     private CitateMachineComponent citateMachineComponent;
 
     // Endpoint to add a book to the citation list
-    @PostMapping("/api/addBook")
+    @PostMapping("/api/addCitationBook")
     public ResponseEntity<Map<String, Object>> addBookToCitationList(@RequestBody Map<String, Object> bookData, Authentication authentication) {
         try {
             // Assuming you have a method in CitateMachineComponent to add a book
