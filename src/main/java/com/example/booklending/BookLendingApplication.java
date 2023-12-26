@@ -2,19 +2,26 @@ package com.example.booklending;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.context.request.async.TimeoutCallableProcessingInterceptor;
+import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
-@ComponentScan(basePackages = "com.example.booklending")
 public class BookLendingApplication {
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
+        SpringApplication.run(BookLendingApplication.class, args);
+    }
 
-		SpringApplication app = new SpringApplication(BookLendingApplication.class);
-
-		// Uncomment the line below for local development
-        app.setAdditionalProfiles("local");
-		app.run(args);
-	}
-
+    @Bean
+    public WebMvcConfigurer webMvcConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
+                configurer.setDefaultTimeout(999999); // Set the timeout in milliseconds
+                configurer.registerCallableInterceptors(new TimeoutCallableProcessingInterceptor());
+            }
+        };
+    }
 }
