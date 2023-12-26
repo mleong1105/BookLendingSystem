@@ -19,7 +19,7 @@ public class BookLendingApplication {
         return new WebMvcConfigurer() {
             @Override
             public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
-                configurer.setDefaultTimeout(999999); // Set the timeout in milliseconds
+                configurer.setDefaultTimeout(999999); // just setting high timeout
                 configurer.registerCallableInterceptors(new TimeoutCallableProcessingInterceptor());
             }
         };

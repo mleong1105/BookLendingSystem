@@ -4,7 +4,7 @@ public class CommentRequest {
     private String authorId;
     private String content;
 
-    // getters and setters
+
 
     public String getAuthorId() {
         return authorId;

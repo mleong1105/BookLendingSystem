@@ -8,9 +8,7 @@ public class ForumPostRequest {
     private String content;
     private String forumId;
 
-    // Add any other fields you might need
-
-    // Constructors, getters, and setters
+   
 
     public ForumPostRequest() {
     }
@@ -22,7 +20,7 @@ public class ForumPostRequest {
         this.content = content;
     }
 
-    // Getters and setters
+  
 
     public String getForumId() {
         return forumId;
