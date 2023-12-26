@@ -1,0 +1,62 @@
+[
+    {
+        "bookID": "0",
+        "title": "Atomic Habits",
+        "Author": "James Clear",
+        "publishYear": "2016"
+    },
+    {
+        "bookID": "1",
+        "title": "The 48 Laws of Power",
+        "Author": "Robert Greene and Joost Elffers",
+        "publishYear": "1998"
+    },
+    {
+        "bookID": "2",
+        "title": "Um casamento arranjado",
+        "Author": "Zana Kheiron",
+        "publishYear": "2019"
+    },
+    {
+        "bookID": "3",
+        "title": "Control Your Mind and Master Your Feelings",
+        "Author": "Eric Robertson",
+        "publishYear": "2019"
+    },
+    {
+        "bookID": "4",
+        "title": "The Subtle Art of Not Giving a F*ck",
+        "Author": "Mark Manson",
+        "publishYear": "2016"
+    },
+    {
+        "bookID": "5",
+        "title": "Icebreaker",
+        "Author": "Hannah Grace",
+        "publishYear": "2020"
+    },
+    {
+        "bookID": "6",
+        "title": "It Ends With Us",
+        "Author": "Colleen Hoover",
+        "publishYear": "2012"
+    },
+    {
+        "bookID": "7",
+        "title": "Rich Dad, Poor Dad",
+        "Author": "Robert T. Kiyosaki and Sharon L. Lechter",
+        "publishYear": "1990"
+    },
+    {
+        "bookID": "8",
+        "title": "Twisted Love",
+        "Author": "Ana Huang",
+        "publishYear": "2021"
+    },
+    {
+        "bookID": "9",
+        "title": "The Psychology of Money",
+        "Author": "Morgan Housel",
+        "publishYear": "2020"
+    }
+]
