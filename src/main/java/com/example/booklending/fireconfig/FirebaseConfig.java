@@ -1,6 +1,8 @@
 package com.example.booklending.fireconfig;
 
 import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.FirestoreOptions;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.DatabaseReference;
@@ -10,6 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 @Configuration
@@ -33,6 +36,17 @@ public class FirebaseConfig {
     public DatabaseReference firebaseDatabaseReference() throws IOException {
         initializeFirebase();
         return FirebaseDatabase.getInstance().getReference();
+    }
+    @Bean
+    public Firestore firestore() throws IOException {
+        // Replace "/path/to/your/credentials.json" with the actual path to your Google Cloud service account key file
+        FileInputStream serviceAccount = new FileInputStream("src/main/java/com/example/booklending/fireconfig/firebase-private-key.json");
+
+        FirestoreOptions firestoreOptions = FirestoreOptions.newBuilder()
+                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                .build();
+
+        return firestoreOptions.getService();
     }
 
     private void initializeFirebase() throws IOException {
