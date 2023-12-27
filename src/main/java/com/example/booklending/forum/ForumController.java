@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.example.booklending.forum.ForumService;
+
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -29,31 +31,50 @@ public class ForumController {
                 .exceptionally(ex -> ResponseEntity.status(500).<List<FirebaseForumDetails>>body(null));
     }
 
+    @GetMapping("/viewAll")
+    public CompletableFuture<ResponseEntity<List<FirebaseForumDetails>>> viewAllForums() {
+        return forumModule.viewAllForums()
+                .thenApply(ResponseEntity::ok)
+                .exceptionally(ex -> ResponseEntity.status(500).<List<FirebaseForumDetails>>body(null));
+    }
+
     @PostMapping("/create")
-    public CompletableFuture<ResponseEntity<Void>> createForumPost(@RequestBody FirebaseForumDetails forumPost) {
-        return forumModule.createForumPost(forumPost)
-                .thenApply(ResponseEntity::ok)
-                .exceptionally(ex -> ResponseEntity.status(500).<Void>body(null));
+    public CompletableFuture<ResponseEntity<String>> createForumPost(@RequestBody ForumPostRequest forumPostRequest) {
+        return forumModule.createForumPost(forumPostRequest)
+                .thenApply(response -> ResponseEntity.ok("Forum post created successfully"))
+                .exceptionally(ex -> ResponseEntity.status(500).body("Failed to create forum post"));
     }
 
-    @PutMapping("/edit")
-    public CompletableFuture<ResponseEntity<Void>> editForumPost(@RequestBody FirebaseForumDetails updatedForumPost) {
-        return forumModule.editForumPost(updatedForumPost)
-                .thenApply(ResponseEntity::ok)
-                .exceptionally(ex -> ResponseEntity.status(500).<Void>body(null));
-    }
-
-    @DeleteMapping("/delete/{forumPostId}")
-    public CompletableFuture<ResponseEntity<Void>> deleteForumPost(@PathVariable String forumPostId) {
-        return forumModule.deleteForumPost(forumPostId)
-                .thenApply(ResponseEntity::ok)
-                .exceptionally(ex -> ResponseEntity.status(500).<Void>body(null));
+    @PostMapping("/{forumId}/comments")
+    public CompletableFuture<ResponseEntity<String>> createComment(
+            @PathVariable String forumId,
+            @RequestBody CommentRequest commentRequest) {
+        return forumModule.createComment(forumId, commentRequest)
+                .thenApply(response -> ResponseEntity.ok("Comment created successfully"))
+                .exceptionally(ex -> ResponseEntity.status(500).body("Failed to create comment"));
     }
 
     @GetMapping("/search")
-    public CompletableFuture<ResponseEntity<List<FirebaseForumDetails>>> searchForums(@RequestParam String query) {
+    public CompletableFuture<ResponseEntity<List<FirebaseForumDetails>>> searchForums(
+            @RequestParam String query) {
         return forumModule.searchForums(query)
                 .thenApply(ResponseEntity::ok)
                 .exceptionally(ex -> ResponseEntity.status(500).<List<FirebaseForumDetails>>body(null));
+    }
+
+    @PutMapping("/edit/{forumId}")
+    public CompletableFuture<ResponseEntity<String>> editForumPost(
+            @PathVariable String forumId,
+            @RequestBody ForumPostRequest updatedForumPostRequest) {
+        return forumModule.editForumPost(forumId, updatedForumPostRequest)
+                .thenApply(response -> ResponseEntity.ok("Forum post updated successfully"))
+                .exceptionally(ex -> ResponseEntity.status(500).body("Failed to update forum post"));
+    }
+
+    @DeleteMapping("/delete/{forumId}")
+    public CompletableFuture<ResponseEntity<String>> deleteForumPost(@PathVariable String forumId) {
+        return forumModule.deleteForumPost(forumId)
+                .thenApply(response -> ResponseEntity.ok("Forum post deleted successfully"))
+                .exceptionally(ex -> ResponseEntity.status(500).body("Failed to delete forum post"));
     }
 }
