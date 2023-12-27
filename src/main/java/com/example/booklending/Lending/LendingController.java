@@ -38,6 +38,14 @@ public class LendingController {
         }
     }
 
+    @GetMapping("/availableBooks")
+    public ResponseEntity<List<firebaseBorrowedBook>> getAvailableBooks() {
+        try {
+            return ResponseEntity.ok(lendingService.getAvailableBooks());
+        } catch (ExecutionException | InterruptedException e) {
+            return ResponseEntity.internalServerError().build(); // Consider a more detailed error response
+        }
+    }
     // Create a borrow request
     @PostMapping("/borrow")
     public ResponseEntity<Void> makeBorrowRequest(@RequestBody firebaseBorrowRequest request) {

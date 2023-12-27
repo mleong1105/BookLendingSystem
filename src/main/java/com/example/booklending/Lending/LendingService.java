@@ -40,6 +40,16 @@ public class LendingService {
                 .forEach(doc -> borrowedBooks.add(doc.toObject(firebaseBorrowedBook.class)));
         return borrowedBooks;
     }
+    // Fetch available books for borrowing
+    public List<firebaseBorrowedBook> getAvailableBooks() throws ExecutionException, InterruptedException {
+        List<firebaseBorrowedBook> availableBooks = new ArrayList<>();
+        firestore.collection("Books") // Assuming your books are stored in a collection named "Books"
+                .whereEqualTo("available", true)
+                .get()
+                .get()
+                .forEach(doc -> availableBooks.add(doc.toObject(firebaseBorrowedBook.class)));
+        return availableBooks;
+    }
 
     // Handling borrow requests from students
     public void makeBorrowRequest(firebaseBorrowRequest request) throws ExecutionException, InterruptedException {
