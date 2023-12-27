@@ -28,7 +28,7 @@ public class SBRController {
 
             String userId = JSONParser.getStringValue(requestBody, "userId");
 
-            // Assuming you have a method in SBRComponent to get recommended books
+
             CompletableFuture<List<FirebaseBookDetails>> recommendedBooks = sbrComponent.getRecommendedBooks(userId);
 
             // Wait for the completion of the CompletableFuture
