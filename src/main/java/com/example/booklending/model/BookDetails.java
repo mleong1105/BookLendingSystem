@@ -1,28 +1,30 @@
 package com.example.booklending.model;
 
 public class BookDetails {
-    private String bookName;
-    private String bookId;
+    private String title;
+    private String source;
     private String author;
     private String publish_year;
     private boolean loaned;
     private boolean isAvailable;
+    private String loaned_to;
 
-    public BookDetails(String bookName, String bookId, String author, String publish_year) {
-        this.bookName = bookName;
-        this.bookId = bookId;
+    public BookDetails(String bookName, String author, String publish_year, String source) {
+        this.title = bookName;
         this.author = author;
         this.publish_year = publish_year;
+        this.source = source;
         this.loaned = false;
         this.isAvailable = false;
+        this.loaned_to = "";
     }
 
     public String getBookName() {
-        return bookName;
+        return title;
     }
 
     public void setBookName(String bookName) {
-        this.bookName = bookName;
+        this.title = bookName;
     }
 
     public boolean isAvailable() {
@@ -32,15 +34,7 @@ public class BookDetails {
     public void setAvailable(boolean isAvailable) {
         this.isAvailable = isAvailable;
     }
-
-    public String getBookId() {
-        return bookId;
-    }
-
-    public void setBookId(String bookId) {
-        this.bookId = bookId;
-    }
-
+    
     public String getAuthor() {
         return author;
     }
@@ -55,6 +49,22 @@ public class BookDetails {
 
     public void setLoaned(boolean loaned) {
         this.loaned = loaned;
+    }
+
+     public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    public String getLoaned_to() {
+        return loaned_to;
+    }
+
+    public void setLoaned_to(String loaned_to) {
+        this.loaned_to = loaned_to;
     }
 
     public String getPublish_year() {

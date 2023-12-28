@@ -26,11 +26,11 @@ public class BookController {
 
     @PostMapping("/addBook")
     public boolean addBook(@RequestParam(name = "bookName") String bookName,
-            @RequestParam(name = "bookID") String bookID,
+            @RequestParam(name = "source") String source,
             @RequestParam(name = "author") String author, @RequestParam(name = "yearPublished") String yearPublished,
             @RequestParam(name = "isAdmin") boolean isAdmin) {
         if (isAdmin) {
-            BookDetails bookDetails = new BookDetails(bookName, bookID, author, yearPublished);
+            BookDetails bookDetails = new BookDetails(bookName, author, yearPublished, source);
             return bookRepository.addBook(bookDetails);
 
         } else {
@@ -45,38 +45,57 @@ public class BookController {
             @RequestParam(name = "yearPublished", required = false) String yearPublished,
             @RequestParam(name = "loaned", required = false) boolean loaned,
             @RequestParam(name = "isAvailable", required = false) boolean isAvailable,
-            @RequestParam(name = "isAdmin") boolean isAdmin) {
+            @RequestParam(name = "isAdmin") boolean isAdmin,
+            @RequestParam(name = "source", required = false) String source,
+            @RequestParam(name = "loaned_to", required = false) String loaned_to) {
         if (isAdmin) {
-            String newBookName = "", newAuthor = "", newYearPublished = "";
-            BookDetails updateBook = bookComponent.getBookDetails(bookID);
-            if (updateBook != null) {
-                if (bookName == null)
-                    newBookName = updateBook.getBookName();
-                else
-                    newBookName = bookName;
-                if (author == null)
-                    newAuthor = updateBook.getAuthor();
-                else
-                    newAuthor = author;
-                if (yearPublished == null)
-                    newYearPublished = updateBook.getPublish_year();
+            String newBookName = "", newAuthor = "", newYearPublished = "", newSource = "", newLoanedTo = "";
+            CompletableFuture<BookDetails> result = bookComponent.getBookDetails(bookID);
+            try {
+                // Wait for the asynchronous removal to complete
+                BookDetails currentBook = result.get();
 
-                BookDetails newBookDetails = new BookDetails(newBookName, bookID, newAuthor, newYearPublished);
-                if (loaned)
-                    newBookDetails.setLoaned(true);
-                else
-                    newBookDetails.setLoaned(false);
+                if (currentBook != null) {
+                    if (bookName == null)
+                        newBookName = currentBook.getBookName();
+                    else
+                        newBookName = bookName;
+                    if (author == null)
+                        newAuthor = currentBook.getAuthor();
+                    else
+                        newAuthor = author;
+                    if (yearPublished == null)
+                        newYearPublished = currentBook.getPublish_year();
+                    if (source == null)
+                        newSource = currentBook.getSource();
+                    else
+                        newSource = source;
+                    if (loaned_to == null)
+                        newLoanedTo = currentBook.getLoaned_to();
+                    else
+                        newLoanedTo = loaned_to;
 
-                if (isAvailable)
-                    newBookDetails.setAvailable(true);
-                else
-                    newBookDetails.setAvailable(false);
+                    BookDetails newBookDetails = new BookDetails(newBookName, newAuthor, newYearPublished, newSource);
+                    if (loaned)
+                        newBookDetails.setLoaned(true);
+                    else
+                        newBookDetails.setLoaned(false);
 
-                return bookRepository.updateBook(newBookDetails);
-            } else {
-                System.out.println("BOOK NOT FOUND, PLEASE ENTER CORRECT BOOKID");
+                    if (isAvailable)
+                        newBookDetails.setAvailable(true);
+                    else
+                        newBookDetails.setAvailable(false);
+
+                    return bookRepository.updateBook(newBookDetails, bookID);
+                } else {
+                    System.out.println("No matching book");
+                    return null;
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                System.out.println("Exception during book removal: " + e.getMessage());
                 return null;
             }
+
         } else {
             System.out.println("ONLY ADMIN CAN UPDATE BOOK");
             return null;
@@ -112,8 +131,7 @@ public class BookController {
                 System.out.println("Exception during book removal: " + e.getMessage());
                 return null;
             }
-        }
-        else {
+        } else {
             System.out.println("ONLY ADMIN CAN REMOVE BOOK");
             return null;
         }
@@ -127,7 +145,22 @@ public class BookController {
 
     @GetMapping("/books/{id}")
     public BookDetails getBookDetailsWithID(@PathVariable String id) {
-        return bookComponent.getBookDetails(id);
+        CompletableFuture<BookDetails> result = bookComponent.getBookDetails(id);
+        try {
+            // Wait for the asynchronous removal to complete
+            BookDetails resultBook = result.get();
+
+            if (resultBook != null) {
+                System.out.println("Book: " + resultBook.getBookName());
+                return resultBook;
+            } else {
+                System.out.println("No matching book");
+                return null;
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            System.out.println("Exception during fetching: " + e.getMessage());
+            return null;
+        }
     }
 
 }

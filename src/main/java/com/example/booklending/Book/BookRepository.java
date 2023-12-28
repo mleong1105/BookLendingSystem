@@ -23,8 +23,8 @@ public class BookRepository {
         return success;
     }
 
-    public BookDetails updateBook(BookDetails newBookDetails) {
-        return bookService.updateBookDetails(newBookDetails);
+    public BookDetails updateBook(BookDetails newBookDetails, String id) {
+        return bookService.updateBookDetails(newBookDetails, id);
     }
 
     public CompletableFuture<BookDetails> removeBook(String bookID) {

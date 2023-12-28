@@ -1,6 +1,7 @@
 package com.example.booklending.Book;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,7 +17,20 @@ public class BookComponent {
         return bookService.viewListOfBooks();
     }
 
-    public BookDetails getBookDetails(String id){
-        return bookService.viewBookDetails(id);
+    public CompletableFuture<BookDetails> getBookDetails(String bookID) {
+        CompletableFuture<BookDetails> searchResult = bookService.viewBookDetails(bookID);
+
+        searchResult.thenAccept(result -> {
+            if (result != null) {
+                System.out.println("Book: " + result);
+            } else {
+                System.out.println("Error");
+            }
+        }).exceptionally(exception -> {
+            // Handle exceptions
+            System.out.println("Exception during fetching: " + exception.getMessage());
+            return null;
+        });
+        return searchResult;
     }
 }

@@ -39,7 +39,7 @@ public class BookService {
 
         boolean checking = false;
         for (BookDetails item : list) {
-            if (item.getBookId().equals(newBookDetails.getBookId())) {
+            if (item.getBookName().equals(newBookDetails.getBookName())) {
                 checking = true;
                 break;
             }
@@ -84,21 +84,22 @@ public class BookService {
             public void onDataChange(DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     String key = dataSnapshot.getKey();
-                    String bookId = dataSnapshot.child("bookId").getValue(String.class);
                     boolean previousLoanStatus = dataSnapshot.child("loaned").getValue(Boolean.class);
                     boolean previousAvailableStatus = dataSnapshot.child("available").getValue(Boolean.class);
-                    System.out.println(bookId+" | "+id);
-                    if (bookId.equals(id)) {
+                    String previousLoanedToStatus = dataSnapshot.child("loaned_to").getValue(String.class);
+
+                    if (key.equals(id)) {
                         mDatabaseReference.child(key).removeValue((error, ref) -> {
                             if (error == null) {
                                 // Book successfully deleted
                                 BookDetails deletedBook = new BookDetails(
                                         dataSnapshot.child("bookName").getValue(String.class),
-                                        bookId,
                                         dataSnapshot.child("author").getValue(String.class),
-                                        dataSnapshot.child("publish_year").getValue(String.class));
+                                        dataSnapshot.child("publish_year").getValue(String.class),
+                                        dataSnapshot.child("source").getValue(String.class));
                                 deletedBook.setLoaned(previousLoanStatus);
                                 deletedBook.setAvailable(previousAvailableStatus);
+                                deletedBook.setLoaned_to(previousLoanedToStatus);
                                 System.out.println("DELETE COMPLETE");
                                 future.complete(deletedBook);
                             } else {
@@ -127,7 +128,7 @@ public class BookService {
         return future;
     }
 
-    public BookDetails updateBookDetails(BookDetails newBookDetails) {
+    public BookDetails updateBookDetails(BookDetails newBookDetails, String id) {
         AtomicReference<BookDetails> returnBookAfterUpdate = new AtomicReference<>(newBookDetails);
         Firestore dbFirestore = FirestoreClient.getFirestore();
         DatabaseReference mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("books");
@@ -137,12 +138,11 @@ public class BookService {
             public void onDataChange(DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     String key = dataSnapshot.getKey();
-                    String bookId = dataSnapshot.child("bookId").getValue(String.class);
                     String title = dataSnapshot.child("bookName").getValue(String.class);
                     String author = dataSnapshot.child("author").getValue(String.class);
                     String publishYear = dataSnapshot.child("publish_year").getValue(String.class);
 
-                    if (newBookDetails.getBookId().equals(bookId)) {
+                    if (id.equals(key)) {
                         CountDownLatch latch = new CountDownLatch(1);
                         Map<String, Object> updates = new HashMap<>();
                         updates.put("bookName", newBookDetails.getBookName());
@@ -200,12 +200,12 @@ public class BookService {
                     System.out.println("Book Title: " + bookNode.get("title").asText());
                     System.out.println("Author: " + bookNode.get("Author").asText());
                     System.out.println("Publish Year: " + bookNode.get("publishYear").asText());
-                    System.out.println("ID: " + bookNode.get("bookID").asText());
 
                     System.out.println("---------------------");
                     String bookDocId = mDatabaseReference.push().getKey();
-                    bookDetails = new BookDetails(bookNode.get("title").asText(), bookNode.get("bookID").asText(),
-                            bookNode.get("Author").asText(), bookNode.get("publishYear").asText());
+                    bookDetails = new BookDetails(bookNode.get("title").asText(),
+                            bookNode.get("Author").asText(), bookNode.get("publishYear").asText(),
+                            bookNode.get("source").asText());
                     mDatabaseReference.child("books").child(bookDocId).setValue(bookDetails,
                             (error, ref) -> {
                                 if (error == null) {
@@ -229,18 +229,49 @@ public class BookService {
         return addSuccessfully.get();
     }
 
-    public BookDetails viewBookDetails(String id) {
-        List<BookDetails> list = viewListOfBooks();
-        BookDetails result = null;
+    public CompletableFuture<BookDetails> viewBookDetails(String id) {
+        DatabaseReference mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("books");
+        System.out.println("IDDD2: " + id);
+        CompletableFuture<BookDetails> future = new CompletableFuture<>();
 
-        for (BookDetails item : list) {
-            if (item.getBookId().equals(id)) {
-                result = new BookDetails(item.getBookName(), item.getBookId(), item.getAuthor(),
-                        item.getPublish_year());
-                break;
+        mDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    String key = dataSnapshot.getKey();
+                    boolean previousLoanStatus = dataSnapshot.child("loaned").getValue(Boolean.class);
+                    boolean previousAvailableStatus = dataSnapshot.child("available").getValue(Boolean.class);
+                    String previousLoanedToStatus = dataSnapshot.child("loaned_to").getValue(String.class);
+
+                    if (key.equals(id)) {
+                        System.out.println("KEY: " + key);
+                        BookDetails currentBook = new BookDetails(
+                                dataSnapshot.child("bookName").getValue(String.class),
+                                dataSnapshot.child("author").getValue(String.class),
+                                dataSnapshot.child("publish_year").getValue(String.class),
+                                dataSnapshot.child("source").getValue(String.class));
+                        currentBook.setLoaned(dataSnapshot.child("loaned").getValue(Boolean.class));
+                        currentBook.setAvailable(dataSnapshot.child("available").getValue(Boolean.class));
+                        currentBook.setLoaned_to(dataSnapshot.child("loaned_to").getValue(String.class));
+                        future.complete(currentBook);
+                        return; // Exit the loop once the book is found and processed
+                    }
+                }
+
+                // If the loop completes without finding a matching book
+                System.out.println("NO MATCHING BOOKID: " + id);
+                future.complete(null);
             }
-        }
-        return result;
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Handle onCancelled event
+                System.out.println("Error: " + error.getMessage());
+                future.completeExceptionally(new RuntimeException("Database error"));
+            }
+        });
+
+        return future;
     }
 
     public List<BookDetails> viewListOfBooks() {
@@ -251,6 +282,7 @@ public class BookService {
         mDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                System.out.print(dataSnapshot);
                 listWrapper[0] = convertToBookDetailsList((Map<String, Map<String, String>>) dataSnapshot.getValue());
                 latch.countDown();
             }
@@ -281,8 +313,8 @@ public class BookService {
             }
             Map<String, String> bookData = entry.getValue();
 
-            BookDetails bookDetails = new BookDetails(bookData.get("bookName"), bookData.get("bookId"),
-                    bookData.get("author"), bookData.get("publish_year"));
+            BookDetails bookDetails = new BookDetails(bookData.get("bookName"),
+                    bookData.get("author"), bookData.get("publish_year"), bookData.get("source"));
 
             bookDetailsList.add(bookDetails);
         }
