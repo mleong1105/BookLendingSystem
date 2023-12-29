@@ -6,15 +6,15 @@ public class FirebaseCommentDetails {
 
     private String commentId;
     private String bookId;
-    private String authorId;
+    private String commenterId;
     private String timestamp;
     private String content;
     private HashSet<String> upvoters;
     private HashSet<String> reporters;
 
-    public FirebaseCommentDetails(String bookId, String authorId, String timestamp, String content) {
+    public FirebaseCommentDetails(String bookId, String commenterId, String timestamp, String content) {
         this.bookId = bookId;
-        this.authorId = authorId;
+        this.commenterId = commenterId;
         this.timestamp = timestamp;
         this.content = content;
         this.upvoters = new HashSet<>();
@@ -29,8 +29,8 @@ public class FirebaseCommentDetails {
         return this.bookId;
     }
 
-    public String getAuthorId() {
-        return this.authorId;
+    public String getCommenterId() {
+        return this.commenterId;
     }
 
     public String getTimestamp() {
@@ -57,8 +57,8 @@ public class FirebaseCommentDetails {
         this.bookId = bookId;
     }
 
-    public void setAuthorId(String authorId) {
-        this.authorId = authorId;
+    public void setCommenterId(String commenterId) {
+        this.commenterId = commenterId;
     }
 
     public void setTimestamp(String timestamp) {

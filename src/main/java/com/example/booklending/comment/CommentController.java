@@ -19,11 +19,11 @@ public class CommentController {
         this.commentService = commentService;
     }
 
-    @GetMapping("/view/{bookId}")
+    @GetMapping("/view")
     public CompletableFuture<ResponseEntity<List<FirebaseCommentDetails>>> viewComments(
-            @PathVariable String bookId,
-            @RequestParam(required = false, defaultValue = "timestamp") String orderBy,
-            @RequestParam(required = false, defaultValue = "true") boolean ascending) {
+            @RequestParam(name = "bookId", required = true) String bookId,
+            @RequestParam(name = "orderBy", required = false, defaultValue = "timestamp") String orderBy,
+            @RequestParam(name = "ascending",required = false, defaultValue = "true") boolean ascending) {
         return commentService.viewComments(bookId, orderBy, ascending)
                 .thenApply(ResponseEntity::ok)
                 .exceptionally(ex -> ResponseEntity.status(500).<List<FirebaseCommentDetails>>body(null));
@@ -36,65 +36,58 @@ public class CommentController {
                 .exceptionally(ex -> ResponseEntity.status(500).<Void>body(null));
     }
 
-    @PutMapping("/edit")
-    public CompletableFuture<ResponseEntity<Void>> editComment(@RequestBody FirebaseCommentDetails updatedComment) {
-        return commentService.editComment(updatedComment)
-                .thenApply(ResponseEntity::ok)
-                .exceptionally(ex -> ResponseEntity.status(500).<Void>body(null));
-    }
-
-    @DeleteMapping("/delete/{commentId}")
-    public CompletableFuture<ResponseEntity<Void>> deleteComment(@PathVariable String commentId) {
+    @DeleteMapping("/delete")
+    public CompletableFuture<ResponseEntity<Void>> deleteComment(@RequestParam(name = "commentId", required = true) String commentId) {
         return commentService.deleteComment(commentId)
                 .thenApply(ResponseEntity::ok)
                 .exceptionally(ex -> ResponseEntity.status(500).<Void>body(null));
     }
 
-    @PostMapping("/upvote/{commentId}/{userId}")
+    @PostMapping("/upvote")
     public CompletableFuture<ResponseEntity<Void>> upvoteComment(
-            @PathVariable String commentId,
-            @PathVariable String userId) {
+            @RequestParam(name = "commentId", required = true) String commentId,
+            @RequestParam(name = "userId", required = true) String userId) {
         return commentService.upvoteComment(commentId, userId)
                 .thenApply(ResponseEntity::ok)
                 .exceptionally(ex -> ResponseEntity.status(500).<Void>body(null));
     }
 
-    @PostMapping("/undoUpvote/{commentId}/{userId}")
+    @PostMapping("/undoUpvote")
     public CompletableFuture<ResponseEntity<Void>> undoUpvoteComment(
-            @PathVariable String commentId,
-            @PathVariable String userId) {
+            @RequestParam(name = "commentId", required = true) String commentId,
+            @RequestParam(name = "userId", required = true) String userId) {
         return commentService.undoUpvoteComment(commentId, userId)
                 .thenApply(ResponseEntity::ok)
                 .exceptionally(ex -> ResponseEntity.status(500).<Void>body(null));
     }
 
-    @PostMapping("/report/{commentId}/{userId}")
+    @PostMapping("/report")
     public CompletableFuture<ResponseEntity<Void>> reportComment(
-            @PathVariable String commentId,
-            @PathVariable String userId) {
+            @RequestParam(name = "commentId", required = true) String commentId,
+            @RequestParam(name = "userId", required = true) String userId) {
         return commentService.reportComment(commentId, userId)
                 .thenApply(ResponseEntity::ok)
                 .exceptionally(ex -> ResponseEntity.status(500).<Void>body(null));
     }
 
-    @PostMapping("/undoReport/{commentId}/{userId}")
+    @PostMapping("/undoReport")
     public CompletableFuture<ResponseEntity<Void>> undoReportComment(
-            @PathVariable String commentId,
-            @PathVariable String userId) {
+            @RequestParam(name = "commentId", required = true) String commentId,
+            @RequestParam(name = "userId", required = true) String userId) {
         return commentService.undoReportComment(commentId, userId)
                 .thenApply(ResponseEntity::ok)
                 .exceptionally(ex -> ResponseEntity.status(500).<Void>body(null));
     }
 
-    @GetMapping("/upvoteCount/{commentId}")
-    public CompletableFuture<ResponseEntity<Integer>> getUpvoteCount(@PathVariable String commentId) {
+    @GetMapping("/upvoteCount")
+    public CompletableFuture<ResponseEntity<Integer>> getUpvoteCount(@RequestParam(name = "commentId", required = true) String commentId) {
         return commentService.getUpvoteCount(commentId)
                 .thenApply(ResponseEntity::ok)
                 .exceptionally(ex -> ResponseEntity.status(500).<Integer>body(null));
     }
 
-    @GetMapping("/reportCount/{commentId}")
-    public CompletableFuture<ResponseEntity<Integer>> getReportCount(@PathVariable String commentId) {
+    @GetMapping("/reportCount")
+    public CompletableFuture<ResponseEntity<Integer>> getReportCount(@RequestParam(name = "commentId", required = true) String commentId) {
         return commentService.getReportCount(commentId)
                 .thenApply(ResponseEntity::ok)
                 .exceptionally(ex -> ResponseEntity.status(500).<Integer>body(null));

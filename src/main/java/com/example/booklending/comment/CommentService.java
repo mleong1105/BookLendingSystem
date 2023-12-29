@@ -92,15 +92,6 @@ public class CommentService {
         return future;
     }
 
-    public CompletableFuture<Void> editComment(FirebaseCommentDetails updatedComment) {
-        CompletableFuture<Void> future = new CompletableFuture<>();
-        DatabaseReference commentRef = mDatabaseReference.child(updatedComment.getCommentId());
-        commentRef.setValue(updatedComment, (databaseError, databaseReference) ->
-            handleCompletion(databaseError, future));
-
-        return future;
-    }
-
     public CompletableFuture<Void> deleteComment(String commentId) {
         CompletableFuture<Void> future = new CompletableFuture<>();
         mDatabaseReference.child(commentId).removeValue((databaseError, databaseReference) ->

@@ -25,10 +25,6 @@ public class CommentComponent {
         return commentService.addComment(comment);
     }
 
-    public CompletableFuture<Void> editComment(FirebaseCommentDetails updatedComment) {
-        return commentService.editComment(updatedComment);
-    }
-
     public CompletableFuture<Void> deleteComment(String commentId) {
         return commentService.deleteComment(commentId);
     }
