@@ -96,7 +96,9 @@ public class BookService {
                                         dataSnapshot.child("bookName").getValue(String.class),
                                         dataSnapshot.child("author").getValue(String.class),
                                         dataSnapshot.child("publish_year").getValue(String.class),
-                                        dataSnapshot.child("source").getValue(String.class));
+                                        dataSnapshot.child("source").getValue(String.class),
+                                        dataSnapshot.child("genre").getValue(String.class)
+                                        );
                                 deletedBook.setLoaned(previousLoanStatus);
                                 deletedBook.setAvailable(previousAvailableStatus);
                                 deletedBook.setLoaned_to(previousLoanedToStatus);
@@ -147,6 +149,8 @@ public class BookService {
                         Map<String, Object> updates = new HashMap<>();
                         updates.put("bookName", newBookDetails.getBookName());
                         updates.put("author", newBookDetails.getAuthor());
+                        updates.put("genre",newBookDetails.getGenre());
+                        updates.put("loaned_to", newBookDetails.getLoaned_to());
                         updates.put("publish_year", newBookDetails.getPublish_year());
                         updates.put("loaned", newBookDetails.isLoaned());
                         updates.put("isAvailable", newBookDetails.isAvailable());
@@ -205,7 +209,8 @@ public class BookService {
                     String bookDocId = mDatabaseReference.push().getKey();
                     bookDetails = new BookDetails(bookNode.get("title").asText(),
                             bookNode.get("Author").asText(), bookNode.get("publishYear").asText(),
-                            bookNode.get("source").asText());
+                            bookNode.get("source").asText(), bookNode.get("genre").asText()
+                            );
                     mDatabaseReference.child("books").child(bookDocId).setValue(bookDetails,
                             (error, ref) -> {
                                 if (error == null) {
@@ -249,7 +254,9 @@ public class BookService {
                                 dataSnapshot.child("bookName").getValue(String.class),
                                 dataSnapshot.child("author").getValue(String.class),
                                 dataSnapshot.child("publish_year").getValue(String.class),
-                                dataSnapshot.child("source").getValue(String.class));
+                                dataSnapshot.child("source").getValue(String.class),
+                                dataSnapshot.child("genre").getValue(String.class)
+                                );
                         currentBook.setLoaned(dataSnapshot.child("loaned").getValue(Boolean.class));
                         currentBook.setAvailable(dataSnapshot.child("available").getValue(Boolean.class));
                         currentBook.setLoaned_to(dataSnapshot.child("loaned_to").getValue(String.class));
@@ -314,7 +321,7 @@ public class BookService {
             Map<String, String> bookData = entry.getValue();
 
             BookDetails bookDetails = new BookDetails(bookData.get("bookName"),
-                    bookData.get("author"), bookData.get("publish_year"), bookData.get("source"));
+                    bookData.get("author"), bookData.get("publish_year"), bookData.get("source"), bookData.get("genre"));
 
             bookDetailsList.add(bookDetails);
         }

@@ -28,9 +28,10 @@ public class BookController {
     public boolean addBook(@RequestParam(name = "bookName") String bookName,
             @RequestParam(name = "source") String source,
             @RequestParam(name = "author") String author, @RequestParam(name = "yearPublished") String yearPublished,
+            @RequestParam(name = "genre") String genre,
             @RequestParam(name = "isAdmin") boolean isAdmin) {
         if (isAdmin) {
-            BookDetails bookDetails = new BookDetails(bookName, author, yearPublished, source);
+            BookDetails bookDetails = new BookDetails(bookName, author, yearPublished, source,genre);
             return bookRepository.addBook(bookDetails);
 
         } else {
@@ -47,9 +48,11 @@ public class BookController {
             @RequestParam(name = "isAvailable", required = false) boolean isAvailable,
             @RequestParam(name = "isAdmin") boolean isAdmin,
             @RequestParam(name = "source", required = false) String source,
-            @RequestParam(name = "loaned_to", required = false) String loaned_to) {
+            @RequestParam(name = "loaned_to", required = false) String loaned_to,
+            @RequestParam(name = "genre", required = false) String genre
+            ) {
         if (isAdmin) {
-            String newBookName = "", newAuthor = "", newYearPublished = "", newSource = "", newLoanedTo = "";
+            String newBookName = "", newAuthor = "", newYearPublished = "", newSource = "", newLoanedTo = "", newGenre = "";
             CompletableFuture<BookDetails> result = bookComponent.getBookDetails(bookID);
             try {
                 // Wait for the asynchronous removal to complete
@@ -74,8 +77,12 @@ public class BookController {
                         newLoanedTo = currentBook.getLoaned_to();
                     else
                         newLoanedTo = loaned_to;
+                    if(genre == null)
+                        newGenre = currentBook.getGenre();
+                    else
+                        newGenre = genre;
 
-                    BookDetails newBookDetails = new BookDetails(newBookName, newAuthor, newYearPublished, newSource);
+                    BookDetails newBookDetails = new BookDetails(newBookName, newAuthor, newYearPublished, newSource,newGenre);
                     if (loaned)
                         newBookDetails.setLoaned(true);
                     else

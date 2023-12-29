@@ -8,8 +8,9 @@ public class BookDetails {
     private boolean loaned;
     private boolean isAvailable;
     private String loaned_to;
+    private String genre;
 
-    public BookDetails(String bookName, String author, String publish_year, String source) {
+    public BookDetails(String bookName, String author, String publish_year, String source, String genre) {
         this.title = bookName;
         this.author = author;
         this.publish_year = publish_year;
@@ -17,6 +18,7 @@ public class BookDetails {
         this.loaned = false;
         this.isAvailable = false;
         this.loaned_to = "";
+        this.genre = genre;
     }
 
     public String getBookName() {
@@ -74,4 +76,14 @@ public class BookDetails {
     public void setPublish_year(String publish_year) {
         this.publish_year = publish_year;
     }
+
+    public String getGenre() {
+        return genre;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+
+    
 }
