@@ -1,8 +1,11 @@
 package com.example.booklending.forum;
 
 import com.example.booklending.model.FirebaseForumDetails;
+import com.example.booklending.model.ForumCommentDetails;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -21,6 +24,10 @@ public class ForumModule {
         return forumService.viewForums(category, orderBy, ascending);
     }
 
+    public CompletableFuture<List<FirebaseForumDetails>> viewAllForums() {
+        return forumService.viewAllForums();
+    }
+
     public CompletableFuture<Void> createForumPost(FirebaseForumDetails forumPost) {
         return forumService.createForumPost(forumPost);
     }
@@ -33,7 +40,20 @@ public class ForumModule {
         return forumService.deleteForumPost(forumPostId);
     }
 
-    public CompletableFuture<List<FirebaseForumDetails>> searchForums(String query) {
-        return forumService.searchForums(query);
+    public CompletableFuture<List<FirebaseForumDetails>> findForumsByAuthorId(String authorId) {
+        return forumService.findForumsByAuthorId(authorId);
     }
+
+    public CompletableFuture<Void> addCommentToForum(String forumPostId, ForumCommentDetails commentDetails) {
+        return forumService.addCommentToForum(forumPostId, commentDetails);
+    }
+
+    public CompletableFuture<List<ForumCommentDetails>> viewCommentsForForum(String forumPostId) {
+        return forumService.viewCommentsForForum(forumPostId);
+    }
+    
+    public CompletableFuture<List<ForumCommentDetails>> findCommentsByAuthorId(String forumId, String authorId) {
+        return forumService.findCommentsByAuthorId(forumId, authorId);
+    }
+ 
 }

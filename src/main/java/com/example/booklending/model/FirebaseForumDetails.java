@@ -1,6 +1,7 @@
 package com.example.booklending.model;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FirebaseForumDetails {
 
@@ -10,8 +11,15 @@ public class FirebaseForumDetails {
     private String timestamp;
     private String title;
     private String content;
-    private HashSet<String> upvoters;
-    private HashSet<String> reporters;
+    private List<String> upvoters;
+    private List<String> reporters;
+    private List<ForumCommentDetails> comments;
+
+    // Default constructor for Firebase serialization
+    public FirebaseForumDetails() {
+        this.upvoters = new ArrayList<>();
+        this.reporters = new ArrayList<>();
+    }
 
     public FirebaseForumDetails(String category, String authorId, String timestamp, String title, String content) {
         this.category = category;
@@ -19,8 +27,17 @@ public class FirebaseForumDetails {
         this.timestamp = timestamp;
         this.title = title;
         this.content = content;
-        this.upvoters = new HashSet<>();
-        this.reporters = new HashSet<>();
+        this.upvoters = new ArrayList<>();
+        this.reporters = new ArrayList<>();
+        this.comments = new ArrayList<>();
+    }
+
+    public List<ForumCommentDetails> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<ForumCommentDetails> comments) {
+        this.comments = comments;
     }
 
     public String getForumId() {
@@ -47,11 +64,11 @@ public class FirebaseForumDetails {
         return this.content;
     }
 
-    public HashSet<String> getUpvoters() {
+    public List<String> getUpvoters() {
         return this.upvoters;
     }
 
-    public HashSet<String> getReporters() {
+    public List<String> getReporters() {
         return this.reporters;
     }
 
@@ -79,11 +96,11 @@ public class FirebaseForumDetails {
         this.content = content;
     }
 
-    public void setUpvoters(HashSet<String> upvoters) {
+    public void setUpvoters(List<String> upvoters) {
         this.upvoters = upvoters;
     }
 
-    public void setReporters(HashSet<String> reporters) {
+    public void setReporters(List<String> reporters) {
         this.reporters = reporters;
     }
 
