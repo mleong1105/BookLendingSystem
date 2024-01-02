@@ -84,7 +84,8 @@ public class SBRComponent {
                         String publish_year = (String) bookMap.get("publish_year");
                         boolean available = (boolean) bookMap.get("available");
                         boolean loaned = (boolean) bookMap.get("loaned");
-                        FirebaseBookDetails book = new FirebaseBookDetails(bookId, bookName, author, genre, publish_year, available, loaned);
+                        String loaned_To = (String) bookMap.get("loaned_To");
+                        FirebaseBookDetails book = new FirebaseBookDetails(bookId, bookName, author, genre, publish_year, available, loaned, loaned_To);
                         books.add(book);
                     }
                 }

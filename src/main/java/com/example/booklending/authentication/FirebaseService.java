@@ -1,5 +1,6 @@
 package com.example.booklending.authentication;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,6 +58,8 @@ public class FirebaseService {
                         if (dataMap != null) {
                             String email = "", role = "";
 
+                            ArrayList<String> preferedGenres = null, borrow_history = null;
+
                             // Check if the key exists in the dataSnapshot before extracting the value
                             if (dataMap.containsKey("email")) {
                                 email = (String) dataMap.get("email");
@@ -66,7 +69,15 @@ public class FirebaseService {
                                 role = (String) dataMap.get("role");
                             }
 
-                            FirebaseUserDetails userDetails = new FirebaseUserDetails(userId, email, role);
+                            if (dataMap.containsKey("preferedGenres")) {
+                                preferedGenres = (ArrayList<String>) dataMap.get("preferedGenres");
+                            }
+
+                            if (dataMap.containsKey("borrow_history")) {
+                                borrow_history = (ArrayList<String>) dataMap.get("borrow_history");
+                            }
+
+                            FirebaseUserDetails userDetails = new FirebaseUserDetails(userId, email, role, preferedGenres, borrow_history);
 
                             UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
                                     userDetails, null, null);

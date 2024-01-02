@@ -8,8 +8,9 @@ public class FirebaseBookDetails {
     private String publish_year;
     private boolean available;
     private boolean loaned;
+    private String loaned_To;
 
-    public FirebaseBookDetails(String bookId, String bookName, String author, String genre, String publish_year, boolean available, boolean loaned) {
+    public FirebaseBookDetails(String bookId, String bookName, String author, String genre, String publish_year, boolean available, boolean loaned, String loaned_To) {
         this.bookId = bookId;
         this.bookName = bookName;
         this.author = author;
@@ -17,6 +18,8 @@ public class FirebaseBookDetails {
         this.publish_year = publish_year;
         this.available = available;
         this.loaned = loaned;
+        this.loaned_To = loaned_To;
+
     }
 
 
@@ -48,6 +51,8 @@ public class FirebaseBookDetails {
         return loaned;
     }
 
-
+    public String getLoaned_To() {
+        return loaned_To;
+    }
 
 }
