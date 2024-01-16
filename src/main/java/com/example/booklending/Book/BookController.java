@@ -45,7 +45,7 @@ public class BookController {
             @RequestParam(name = "author", required = false) String author,
             @RequestParam(name = "yearPublished", required = false) String yearPublished,
             @RequestParam(name = "loaned", required = false) boolean loaned,
-            @RequestParam(name = "isAvailable", required = false) boolean isAvailable,
+            @RequestParam(name = "available", required = false) boolean available,
             @RequestParam(name = "isAdmin") boolean isAdmin,
             @RequestParam(name = "source", required = false) String source,
             @RequestParam(name = "loaned_to", required = false) String loaned_to,
@@ -88,7 +88,7 @@ public class BookController {
                     else
                         newBookDetails.setLoaned(false);
 
-                    if (isAvailable)
+                    if (available)
                         newBookDetails.setAvailable(true);
                     else
                         newBookDetails.setAvailable(false);
@@ -99,7 +99,7 @@ public class BookController {
                     return null;
                 }
             } catch (InterruptedException | ExecutionException e) {
-                System.out.println("Exception during book removal: " + e.getMessage());
+                System.out.println("Exception during book update: " + e.getMessage());
                 return null;
             }
 

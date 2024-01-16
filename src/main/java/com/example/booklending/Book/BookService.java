@@ -153,7 +153,7 @@ public class BookService {
                         updates.put("loaned_to", newBookDetails.getLoaned_to());
                         updates.put("publish_year", newBookDetails.getPublish_year());
                         updates.put("loaned", newBookDetails.isLoaned());
-                        updates.put("isAvailable", newBookDetails.isAvailable());
+                        updates.put("available", newBookDetails.isAvailable());
 
                         mDatabaseReference.child(key).updateChildren(updates, (error, ref) -> {
                             if (error == null) {
